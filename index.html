@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Damian Chandia-Poblete — Real-World Evidence & Biostatistics</title>
+<meta name="description" content="Freelance real-world evidence and biostatistics. Danish national registry studies from protocol to publication-ready analysis, in reproducible R. PhD epidemiologist based in Copenhagen." />
+<!-- ============================================================
+     EDIT ME: replace the two placeholders below before publishing
+     1. CONTACT EMAIL  → search for  hello@your-domain.dk
+     2. CALL LINK      → search for  YOUR-CALENDLY-LINK
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F4F6F4;
+    --paper-2:#EAEDE7;
+    --ink:#14211D;
+    --ink-soft:#3C4A45;
+    --petrol:#0F3D33;
+    --petrol-2:#123f35;
+    --sage:#5B7A6E;
+    --ochre:#C58B2C;
+    --ochre-deep:#A9741E;
+    --line:#CDD5CE;
+    --card:#FBFCFA;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:500;line-height:1.08;letter-spacing:-.01em}
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--sage);font-weight:500;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:.5em;
+    font-family:'IBM Plex Sans';font-weight:500;font-size:15.5px;
+    padding:13px 22px;border-radius:2px;border:1px solid transparent;
+    text-decoration:none;cursor:pointer;transition:transform .15s ease,background .2s ease,color .2s ease;
+  }
+  .btn-primary{background:var(--ochre);color:#221803;border-color:var(--ochre)}
+  .btn-primary:hover{background:var(--ochre-deep);border-color:var(--ochre-deep)}
+  .btn-ghost{background:transparent;color:var(--paper);border-color:rgba(244,246,244,.35)}
+  .btn-ghost:hover{border-color:var(--paper)}
+  .btn-dark{background:transparent;color:var(--petrol);border-color:var(--petrol)}
+  .btn-dark:hover{background:var(--petrol);color:var(--paper)}
+  .btn:focus-visible,a:focus-visible{outline:2px solid var(--ochre);outline-offset:3px}
+
+  /* ---------- NAV ---------- */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(244,246,244,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+  .brand .mark{font-family:'IBM Plex Mono';font-weight:500;font-size:13px;letter-spacing:.1em;color:var(--paper);background:var(--petrol);padding:5px 8px;border-radius:2px}
+  .brand .bname{font-family:'Fraunces';font-size:19px;font-weight:500}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{font-size:15px;text-decoration:none;color:var(--ink-soft);transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-links .btn-dark{color:var(--petrol)}
+  .nav-toggle{display:none;background:none;border:0;font-size:22px;cursor:pointer;color:var(--ink)}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;background:var(--petrol);color:var(--paper);overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 85% 10%,rgba(197,139,44,.16),transparent 55%),linear-gradient(90deg,var(--petrol) 12%,rgba(15,61,51,.55) 46%,transparent 72%);pointer-events:none}
+  .hero .wrap{position:relative;z-index:2;padding-top:96px;padding-bottom:104px}
+  .hero .eyebrow{color:#9db8ac}
+  .hero h1{font-size:clamp(2.5rem,5.4vw,4.3rem);margin:20px 0 0;max-width:16ch}
+  .hero h1 em{font-style:italic;color:var(--ochre)}
+  .hero .lede{margin-top:26px;max-width:52ch;font-size:19px;color:#d7e2dc}
+  .hero-cta{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap}
+  /* survival curve motif */
+  .km{position:absolute;inset:0;z-index:1;width:100%;height:100%;opacity:.9}
+  .km .axis{stroke:rgba(244,246,244,.16);stroke-width:1}
+  .km .grid{stroke:rgba(244,246,244,.07);stroke-width:1}
+  .km .curve{fill:none;stroke:var(--ochre);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;
+    filter:drop-shadow(0 2px 8px rgba(197,139,44,.35))}
+  .km .censor{stroke:rgba(244,246,244,.55);stroke-width:1.6}
+  .km-label{font-family:'IBM Plex Mono';font-size:11px;fill:rgba(244,246,244,.4);letter-spacing:.08em}
+
+  /* stat strip */
+  .stats{background:var(--petrol-2);border-top:1px solid rgba(244,246,244,.1);position:relative;z-index:2}
+  .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .stat{padding:26px 22px;border-left:1px solid rgba(244,246,244,.1);color:var(--paper)}
+  .stat:first-child{border-left:0;padding-left:0}
+  .stat .n{font-family:'Fraunces';font-size:26px;font-weight:500;color:#fff}
+  .stat .k{font-family:'IBM Plex Mono';font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#9db8ac;margin-top:6px}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:92px 0}
+  .sec-head{max-width:60ch}
+  .sec-head h2{font-size:clamp(1.9rem,3.4vw,2.7rem);margin-top:14px}
+  .sec-head p{margin-top:16px;color:var(--ink-soft);font-size:18px}
+
+  /* value / why */
+  .why{background:var(--paper-2)}
+  .why-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:start;margin-top:8px}
+  .why-lead{font-family:'Fraunces';font-size:clamp(1.5rem,2.6vw,2.05rem);font-weight:400;line-height:1.28;letter-spacing:-.01em}
+  .why-lead em{font-style:italic;color:var(--petrol)}
+  .why-points{display:flex;flex-direction:column;gap:22px}
+  .why-point{display:flex;gap:16px}
+  .why-point .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--ochre);margin-top:9px}
+  .why-point h4{font-family:'IBM Plex Sans';font-weight:600;font-size:16.5px;margin-bottom:3px}
+  .why-point p{color:var(--ink-soft);font-size:15.5px;margin:0}
+
+  /* services */
+  .svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:20px}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:30px 28px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s}
+  .svc:hover{transform:translateY(-3px);box-shadow:0 14px 30px -20px rgba(15,61,51,.5);border-color:var(--sage)}
+  .svc .num{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.1em;color:var(--ochre-deep)}
+  .svc h3{font-size:1.35rem;margin:14px 0 10px}
+  .svc p{color:var(--ink-soft);font-size:15.5px}
+  .svc ul{list-style:none;margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+  .svc li{font-family:'IBM Plex Mono';font-size:11.5px;letter-spacing:.03em;color:var(--sage);border:1px solid var(--line);border-radius:2px;padding:4px 8px}
+
+  /* process */
+  .proc{background:var(--petrol);color:var(--paper)}
+  .proc .eyebrow{color:#9db8ac}
+  .proc .sec-head p{color:#cdd9d3}
+  .proc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:44px;border-top:1px solid rgba(244,246,244,.16)}
+  .step{padding:30px 24px 6px 0;border-top:2px solid transparent;position:relative}
+  .step::before{content:"";position:absolute;top:-1px;left:0;width:46px;height:2px;background:var(--ochre)}
+  .step .s-n{font-family:'IBM Plex Mono';font-size:12.5px;color:var(--ochre);letter-spacing:.1em}
+  .step h4{font-family:'Fraunces';font-weight:500;font-size:1.3rem;margin:16px 0 10px}
+  .step p{color:#cdd9d3;font-size:15px}
+
+  /* method */
+  .method-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start;margin-top:10px}
+  .caps{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+  .cap{font-family:'IBM Plex Mono';font-size:12.5px;color:var(--petrol);background:var(--paper-2);border:1px solid var(--line);border-radius:2px;padding:7px 11px}
+  .method-note{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ochre);border-radius:3px;padding:26px 28px}
+  .method-note h4{font-family:'IBM Plex Sans';font-weight:600;margin-bottom:10px}
+  .method-note p{color:var(--ink-soft);font-size:15.5px}
+
+  /* about */
+  .about{background:var(--paper-2)}
+  .about-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:start}
+  .about-card{background:var(--petrol);color:var(--paper);border-radius:4px;padding:34px 30px}
+  .about-card .role{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9db8ac}
+  .about-card .nm{font-family:'Fraunces';font-size:1.9rem;font-weight:500;margin:8px 0 18px}
+  .about-card dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:14.5px}
+  .about-card dt{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9db8ac;padding-top:2px}
+  .about-card dd{color:#e3ece7}
+  .about-body p{margin-bottom:18px;color:var(--ink-soft)}
+  .about-body p strong{color:var(--ink);font-weight:600}
+  .about-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}
+  .about-links a{font-family:'IBM Plex Mono';font-size:13px;text-decoration:none;color:var(--petrol);border-bottom:1px solid var(--ochre);padding-bottom:2px}
+  .about-links a:hover{color:var(--ochre-deep)}
+
+  /* contact */
+  .contact{background:var(--petrol);color:var(--paper)}
+  .contact .eyebrow{color:#9db8ac}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  .contact-intro h2{font-size:clamp(1.9rem,3.6vw,2.7rem);max-width:16ch;margin-top:14px}
+  .contact-intro h2 em{font-style:italic;color:var(--ochre)}
+  .contact-intro p{color:#cdd9d3;max-width:44ch;margin-top:18px;font-size:18px}
+  .contact-or{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:32px}
+  .contact-or .or{font-family:'IBM Plex Mono';font-size:13px;letter-spacing:.05em;color:#9db8ac}
+
+  .form-wrap{background:var(--card);border-radius:5px;padding:34px 32px;box-shadow:0 24px 50px -28px rgba(0,0,0,.55)}
+  #contact-form{display:flex;flex-direction:column;gap:18px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--sage)}
+  .field label .opt{text-transform:none;letter-spacing:0;color:var(--line)}
+  .field input,.field textarea{
+    font-family:'IBM Plex Sans';font-size:16px;color:var(--ink);
+    background:var(--paper);border:1px solid var(--line);border-radius:3px;
+    padding:12px 13px;width:100%;transition:border-color .18s,box-shadow .18s;resize:vertical;
+  }
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--ochre);box-shadow:0 0 0 3px rgba(197,139,44,.18)}
+  #contact-form .btn{justify-content:center;margin-top:4px}
+  #contact-form .btn[disabled]{opacity:.65;cursor:default}
+  .form-err{color:#b23b2e;font-size:14px;margin:0}
+  .form-done{text-align:center;padding:24px 8px}
+  .form-done .check{width:52px;height:52px;border-radius:50%;background:var(--petrol);color:var(--ochre);
+    display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 16px}
+  .form-done h3{color:var(--ink);font-size:1.5rem}
+  .form-done p{color:var(--ink-soft);font-size:15.5px;margin-top:10px;max-width:34ch;margin-left:auto;margin-right:auto}
+
+  footer{background:var(--ink);color:#9db8ac;padding:34px 0;font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+  footer a{color:#cdd9d3;text-decoration:none}
+  footer a:hover{color:#fff}
+  .foot-mono{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.05em}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:860px){
+    .nav-links{position:fixed;inset:66px 0 auto 0;background:var(--paper);flex-direction:column;gap:0;
+      border-bottom:1px solid var(--line);padding:8px 0;transform:translateY(-140%);transition:transform .28s ease;box-shadow:0 12px 24px -18px rgba(0,0,0,.4)}
+    .nav-links.open{transform:none}
+    .nav-links a{padding:14px 28px;width:100%}
+    .nav-toggle{display:block}
+    .stats .wrap{grid-template-columns:1fr 1fr}
+    .stat:nth-child(3){padding-left:0;border-left:0}
+    .stat{border-top:1px solid rgba(244,246,244,.1)}
+    .stat:nth-child(-n+2){border-top:0}
+    .why-grid,.method-grid,.about-grid,.contact-grid{grid-template-columns:1fr;gap:34px}
+    .svc-grid{grid-template-columns:1fr}
+    .proc-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:520px){
+    .proc-grid{grid-template-columns:1fr}
+    .step{padding-right:0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    .km .curve{stroke-dasharray:none!important;stroke-dashoffset:0!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="mark">RWE</span>
+      <span class="bname">Chandia&#8209;Poblete</span>
+    </a>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false">☰</button>
+    <nav class="nav-links" id="menu">
+      <a href="#why">Why me</a>
+      <a href="#services">Services</a>
+      <a href="#process">How I work</a>
+      <a href="#about">About</a>
+      <a class="btn btn-dark" href="#contact">Book a call</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="padding:0">
+    <svg class="km" viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g id="km-grid"></g>
+      <line class="axis" x1="70" y1="70" x2="70" y2="540"/>
+      <line class="axis" x1="70" y1="540" x2="1150" y2="540"/>
+      <path id="km-curve" class="curve"/>
+      <g id="km-censors"></g>
+      <text class="km-label" x="70" y="565">0 yrs</text>
+      <text class="km-label" x="1090" y="565">34 yrs</text>
+      <text class="km-label" x="18" y="76">1.0</text>
+      <text class="km-label" x="20" y="540">0</text>
+    </svg>
+    <div class="wrap">
+      <p class="eyebrow reveal">Real-World Evidence &middot; Copenhagen</p>
+      <h1 class="reveal">Nordic registry data, turned into evidence you can <em>defend</em>.</h1>
+      <p class="lede reveal">I'm Damian Chandia-Poblete, a PhD epidemiologist. I design and run real-world evidence studies on Danish national registries — from protocol to publication-ready analysis, in reproducible R. You work directly with the person doing the analysis.</p>
+      <div class="hero-cta reveal">
+        <a class="btn btn-primary" href="#contact">Book a 20-min call</a>
+        <a class="btn btn-ghost" href="#services">See what I do</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAT STRIP -->
+  <div class="stats">
+    <div class="wrap">
+      <div class="stat"><div class="n">Up to 34 yrs</div><div class="k">Linked follow-up</div></div>
+      <div class="stat"><div class="n">Statistics DK &middot; DNPR</div><div class="k">Registry access</div></div>
+      <div class="stat"><div class="n">Survival &middot; Causal</div><div class="k">Methods core</div></div>
+      <div class="stat"><div class="n">R, versioned</div><div class="k">Reproducible</div></div>
+    </div>
+  </div>
+
+  <!-- WHY -->
+  <section class="why" id="why">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Why work with me</p>
+        <h2>A specialist, not a service desk.</h2>
+      </div>
+      <div class="why-grid">
+        <p class="why-lead reveal">Most RWE work is sold by teams, with account managers between you and the analysis. Here the analyst <em>is</em> the point of contact — senior throughout, fewer hand-offs, a straighter line from your question to the answer.</p>
+        <div class="why-points">
+          <div class="why-point reveal"><span class="dot"></span><div><h4>Direct senior access</h4><p>The person scoping your study is the person running the models and writing the results. Nothing is delegated down.</p></div></div>
+          <div class="why-point reveal"><span class="dot"></span><div><h4>Regulatory- and journal-grade</h4><p>Pre-specified protocols and SAPs, defined outcomes, sensitivity analyses — built to the standard a reviewer or an HTA body will accept.</p></div></div>
+          <div class="why-point reveal"><span class="dot"></span><div><h4>Reproducible by default</h4><p>Version-controlled R, documented pipelines, and analysis you can hand to an auditor or re-run a year later.</p></div></div>
+          <div class="why-point reveal"><span class="dot"></span><div><h4>Honest feasibility first</h4><p>If Danish data can't answer your question well, I'll tell you before you commit budget — not after.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Services</p>
+        <h2>Fixed-scope work, from question to deliverable.</h2>
+        <p>Engagements are defined up front — deliverables, timeline, and price agreed before we start. Take one, or the full study lifecycle.</p>
+      </div>
+      <div class="svc-grid">
+        <article class="svc reveal">
+          <div class="num">01 / Design</div>
+          <h3>Study design &amp; protocols</h3>
+          <p>Your research question turned into a protocol and statistical analysis plan — pre-specified, defensible, and ready for the data-access application.</p>
+          <ul><li>Protocol</li><li>SAP</li><li>DAG / causal structure</li><li>Data-access support</li></ul>
+        </article>
+        <article class="svc reveal">
+          <div class="num">02 / Analyse</div>
+          <h3>Registry-based analysis</h3>
+          <p>End-to-end analysis on Danish national registry and cohort data: time-to-event, incidence, and causal questions, delivered in reproducible R.</p>
+          <ul><li>Survival / Cox</li><li>Poisson (IRR)</li><li>Causal inference</li><li>Mediation</li><li>MICE imputation</li></ul>
+        </article>
+        <article class="svc reveal">
+          <div class="num">03 / Review</div>
+          <h3>Statistical review &amp; synthesis</h3>
+          <p>Independent review of analyses and manuscripts before submission, plus systematic review and meta-analysis when you need the evidence base assembled.</p>
+          <ul><li>Analysis review</li><li>Manuscript stats</li><li>Systematic review</li><li>Meta-analysis</li></ul>
+        </article>
+        <article class="svc reveal">
+          <div class="num">04 / Scope</div>
+          <h3>Feasibility &amp; scoping</h3>
+          <p>A fast, honest read on whether Danish or Nordic real-world data can answer your question — and the best study design if it can.</p>
+          <ul><li>Data mapping</li><li>Design options</li><li>Cohort feasibility</li><li>Go / no-go</li></ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="proc" id="process">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">How I work</p>
+        <h2>Four steps, no black box.</h2>
+        <p>You see the plan before the analysis, and the code behind the result.</p>
+      </div>
+      <div class="proc-grid">
+        <div class="step reveal"><div class="s-n">01</div><h4>Scope</h4><p>A short call to pin down the question, the population, and whether the data can carry it. You get a clear yes, no, or here's-how.</p></div>
+        <div class="step reveal"><div class="s-n">02</div><h4>Design</h4><p>A written protocol and statistical analysis plan, pre-specified and agreed with you before a single model runs.</p></div>
+        <div class="step reveal"><div class="s-n">03</div><h4>Analyse</h4><p>Reproducible, version-controlled R. Documented, auditable, and re-runnable — with sensitivity analyses built in.</p></div>
+        <div class="step reveal"><div class="s-n">04</div><h4>Deliver</h4><p>A report, figures, or a manuscript section ready to submit — with the reasoning explained in plain terms.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section id="method">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Data &amp; methods</p>
+        <h2>Built on the world's best health data.</h2>
+        <p>Denmark's registries link whole populations across decades — the gold standard for real-world evidence. This is the environment I work in every day.</p>
+      </div>
+      <div class="method-grid">
+        <div class="reveal">
+          <p style="color:var(--ink-soft);margin-bottom:18px">Registry &amp; data sources</p>
+          <div class="caps">
+            <span class="cap">Statistics Denmark</span>
+            <span class="cap">Sundhedsdatastyrelsen</span>
+            <span class="cap">Danish National Patient Register</span>
+            <span class="cap">ICD-8 / ICD-10</span>
+            <span class="cap">Biomarker cohorts</span>
+            <span class="cap">Linked administrative data</span>
+          </div>
+          <p style="color:var(--ink-soft);margin:26px 0 18px">Analytical methods</p>
+          <div class="caps">
+            <span class="cap">Survival / time-to-event</span>
+            <span class="cap">Cox regression</span>
+            <span class="cap">Poisson (IRR)</span>
+            <span class="cap">Causal inference (DAGs)</span>
+            <span class="cap">Mediation analysis</span>
+            <span class="cap">Mixed-effects models</span>
+            <span class="cap">Multiple imputation (MICE)</span>
+            <span class="cap">Sensitivity analyses</span>
+            <span class="cap">Systematic review &amp; meta-analysis</span>
+          </div>
+        </div>
+        <div class="method-note reveal">
+          <h4>On reproducibility</h4>
+          <p>Every analysis is written as version-controlled R with a documented pipeline. That means the result is traceable to the code, the code is re-runnable, and the work stands up to an audit or a reviewer's scrutiny — the same discipline expected of a peer-reviewed publication or a regulatory submission.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="wrap">
+      <div class="sec-head reveal" style="margin-bottom:44px">
+        <p class="eyebrow">About</p>
+        <h2>The person you'll actually work with.</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-card reveal">
+          <div class="role">Epidemiologist, PhD</div>
+          <div class="nm">Damian Chandia-Poblete</div>
+          <dl>
+            <dt>Now</dt><dd>Postdoctoral researcher, University of Copenhagen (ERC-funded)</dd>
+            <dt>Field</dt><dd>Environmental &amp; registry epidemiology, real-world evidence</dd>
+            <dt>Also</dt><dd>BSc Physiotherapy — clinical grounding for health-outcomes work</dd>
+            <dt>Based</dt><dd>Frederiksberg, Copenhagen</dd>
+          </dl>
+        </div>
+        <div class="about-body reveal">
+          <p>I've spent my research career turning large, complex health data into clear answers. My daily work links Danish nationwide registries and long-follow-up biomarker cohorts through Statistics Denmark, using <strong>survival analysis, Poisson regression, causal inference and multiple imputation</strong> — all in reproducible R.</p>
+          <p>That work is peer-reviewed: my research on biomarker-based cohorts and long-term health outcomes has been published in journals including <strong>Environment International</strong>. The same rigour a journal demands is what I bring to client work.</p>
+          <p>I take on a limited number of freelance projects alongside my research. If your team needs extra analysis capacity — without the overhead of a full-service firm or a full-time hire — that's exactly the gap I fill.</p>
+          <div class="about-links">
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn ↗</a>
+            <a href="https://github.com/damianchp" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="#contact">Get in touch →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="wrap contact-grid">
+      <div class="contact-intro reveal">
+        <p class="eyebrow">Get in touch</p>
+        <h2>Sitting on data without the hours to work through it? <em>Let's talk.</em></h2>
+        <p>Tell me the question. I'll tell you honestly whether Danish real-world data can answer it, and what it would take — no pitch deck.</p>
+        <div class="contact-or">
+          <!-- EDIT ME: replace with your Calendly / Cal.com booking link -->
+          <a class="btn btn-primary" href="YOUR-CALENDLY-LINK" target="_blank" rel="noopener">Book a 20-min call</a>
+          <span class="or">or send a message →</span>
+        </div>
+      </div>
+
+      <div class="form-wrap reveal">
+        <!-- EDIT ME: replace YOUR-FORM-ID with your Formspree form ID (see README) -->
+        <form id="contact-form" action="https://formspree.io/f/YOUR-FORM-ID" method="POST" novalidate>
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for="f-org">Organisation <span class="opt">(optional)</span></label>
+            <input id="f-org" name="organisation" type="text" autocomplete="organization" />
+          </div>
+          <div class="field">
+            <label for="f-msg">What's the question?</label>
+            <textarea id="f-msg" name="message" rows="4" required></textarea>
+          </div>
+          <!-- honeypot: hidden from people, catches bots -->
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" />
+          <button class="btn btn-primary" type="submit">Send message</button>
+          <p class="form-err" id="form-err" role="alert" hidden>Something went wrong sending that. Please try again, or email me directly via LinkedIn.</p>
+        </form>
+        <div class="form-done" id="form-done" role="status" hidden>
+          <div class="check">✓</div>
+          <h3>Message sent.</h3>
+          <p>Thanks — it's on its way to my inbox. I'll get back to you within a couple of working days.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="foot-mono">© <span id="yr"></span> Damian Chandia-Poblete · RWE &amp; Biostatistics</span>
+    <span class="foot-mono">Copenhagen, Denmark</span>
+  </div>
+</footer>
+
+<script>
+  // year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // mobile menu
+  const toggle=document.querySelector('.nav-toggle'),menu=document.getElementById('menu');
+  toggle.addEventListener('click',()=>{const o=menu.classList.toggle('open');toggle.setAttribute('aria-expanded',o)});
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');toggle.setAttribute('aria-expanded',false)}));
+
+  // scroll reveal
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.14});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(Math.min(i,6)*60)+'ms';io.observe(el)});
+
+  // ---- contact form ----
+  (function(){
+    const form=document.getElementById('contact-form');
+    if(!form) return;
+    const errEl=document.getElementById('form-err');
+    const done=document.getElementById('form-done');
+    form.addEventListener('submit',async(e)=>{
+      e.preventDefault();
+      if(form.querySelector('[name="_gotcha"]').value) return; // bot
+      errEl.hidden=true;
+      const btn=form.querySelector('button[type=submit]');
+      const label=btn.textContent;
+      btn.disabled=true;btn.textContent='Sending…';
+      try{
+        const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
+        if(!res.ok) throw new Error('bad response');
+        form.hidden=true;done.hidden=false;
+        done.scrollIntoView({behavior:'smooth',block:'center'});
+      }catch(err){
+        btn.disabled=false;btn.textContent=label;errEl.hidden=false;
+      }
+    });
+  })();
+
+  // ---- Kaplan-Meier style survival curve motif ----
+  (function(){
+    const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const x0=70,x1=1150,y0=70,y1=540;
+    // stepped, descending survival function across "follow-up"
+    const steps=[1,.985,.96,.945,.905,.88,.845,.8,.775,.73,.7,.66,.62,.6,.565];
+    const n=steps.length;
+    let d='';
+    for(let i=0;i<n;i++){
+      const xa=x0+(x1-x0)*(i/n);
+      const xb=x0+(x1-x0)*((i+1)/n);
+      const y=y1-(y1-y0)*steps[i];
+      d+=(i===0?`M ${xa} ${y}`:`L ${xa} ${y}`)+` L ${xb} ${y}`;
+    }
+    const path=document.getElementById('km-curve');
+    path.setAttribute('d',d);
+    // grid lines
+    const g=document.getElementById('km-grid');
+    for(let i=1;i<=4;i++){const y=y0+(y1-y0)*(i/5);
+      g.insertAdjacentHTML('beforeend',`<line class="grid" x1="${x0}" y1="${y}" x2="${x1}" y2="${y}"/>`);}
+    // censor ticks along the curve
+    const cs=document.getElementById('km-censors');
+    [2,5,8,11,13].forEach(i=>{const x=x0+(x1-x0)*((i+.5)/n);const y=y1-(y1-y0)*steps[i];
+      cs.insertAdjacentHTML('beforeend',`<line class="censor" x1="${x}" y1="${y-6}" x2="${x}" y2="${y+6}"/>`);});
+    // animate draw
+    if(!reduce){
+      const len=path.getTotalLength();
+      path.style.strokeDasharray=len;path.style.strokeDashoffset=len;
+      requestAnimationFrame(()=>{path.style.transition='stroke-dashoffset 1.8s ease .25s';path.style.strokeDashoffset=0;});
+    }
+  })();
+</script>
+</body>
+</html>
